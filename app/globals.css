@@ -1,0 +1,108 @@
+/* IBM Plex Sans from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+@import "tailwindcss";
+
+@theme inline {
+  /* Industrial Blue Palette - 10 shades conveying reliability */
+  --color-blue-50: #e6f0fa;
+  --color-blue-100: #cce1f5;
+  --color-blue-200: #99c3eb;
+  --color-blue-300: #66a5e0;
+  --color-blue-400: #3387d6;
+  --color-blue-500: #0066cc;
+  --color-blue-600: #0052a3;
+  --color-blue-700: #003d7a;
+  --color-blue-800: #002952;
+  --color-blue-900: #001429;
+  --color-blue-950: #000a14;
+
+  /* Steel-Inspired Neutral Grays */
+  --color-steel-50: #f7f8f9;
+  --color-steel-100: #eef0f2;
+  --color-steel-200: #dde1e6;
+  --color-steel-300: #c1c7cf;
+  --color-steel-400: #a2abb8;
+  --color-steel-500: #697077;
+  --color-steel-600: #4d5358;
+  --color-steel-700: #393e42;
+  --color-steel-800: #24272a;
+  --color-steel-900: #121314;
+  --color-steel-950: #090a0a;
+
+  /* Semantic Colors */
+  --color-success-light: #d4edda;
+  --color-success: #28a745;
+  --color-success-dark: #1e7e34;
+
+  --color-warning-light: #fff3cd;
+  --color-warning: #ffc107;
+  --color-warning-dark: #d39e00;
+
+  --color-error-light: #f8d7da;
+  --color-error: #dc3545;
+  --color-error-dark: #c82333;
+
+  --color-info-light: #d1ecf1;
+  --color-info: #17a2b8;
+  --color-info-dark: #117a8b;
+
+  /* Typography - IBM Plex Sans */
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* 4px-based Spacing Scale (12 increments) */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: var(--color-steel-800);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--color-steel-900);
+    --foreground: var(--color-steel-100);
+  }
+}
+
+html {
+  font-size: 17px; /* Minimum body text optimized for ages 35-65 */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+/* Link defaults */
+a {
+  color: var(--color-blue-600);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-blue-700);
+  text-decoration: underline;
+}
