@@ -2,14 +2,15 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import JobCard from '@/components/JobCard';
-import { getLocationPage, getJobsByLocation, mockLocationPages } from '@/lib/mock-data';
+import { getJobsByLocation } from '@/lib/jobs';
+import { getLocationPage, locationPages } from '@/lib/locations';
 
 interface LocationPageProps {
   params: Promise<{ state: string; city: string }>;
 }
 
 export async function generateStaticParams() {
-  return mockLocationPages.map((page) => ({
+  return locationPages.map((page) => ({
     state: page.state.toLowerCase(),
     city: page.city.toLowerCase(),
   }));
@@ -39,7 +40,8 @@ export default async function LocationPage({ params }: LocationPageProps) {
     notFound();
   }
 
-  const jobs = getJobsByLocation(city, locationPage.stateAbbr);
+  // Fetch jobs from Supabase
+  const jobs = await getJobsByLocation(locationPage.stateAbbr, city);
 
   return (
     <div className="bg-steel-50 min-h-screen">
@@ -122,7 +124,7 @@ export default async function LocationPage({ params }: LocationPageProps) {
             Explore Other Locations
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {mockLocationPages
+            {locationPages
               .filter(
                 (page) =>
                   page.city.toLowerCase() !== city.toLowerCase() ||

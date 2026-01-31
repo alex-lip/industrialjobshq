@@ -11,7 +11,7 @@ Industrial Jobs HQ is a job board focused on industrial sales jobs. Built as a l
 - **Framework**: Next.js 16 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4
-- **Database**: Supabase (planned)
+- **Database**: Supabase (PostgreSQL)
 - **Package Manager**: npm
 
 ## Common Commands
@@ -45,16 +45,62 @@ components/
 └── FilterSidebar.tsx                 # Job filter sidebar
 
 lib/
-└── mock-data.ts                      # Mock job data (until Supabase)
+├── jobs.ts                           # Data fetching functions
+├── locations.ts                      # Static SEO location page data
+├── mock-data.ts                      # Mock job data (fallback)
+└── supabase/
+    ├── server.ts                     # Server-side Supabase client (uses cookies)
+    ├── client.ts                     # Browser-side Supabase client
+    └── static.ts                     # Build-time Supabase client (no cookies)
+
+supabase/
+├── schema.sql                        # Database schema (tables, RLS policies)
+└── seed.sql                          # Seed data (25 sample jobs)
 
 types/
-└── index.ts                          # TypeScript type definitions
+├── index.ts                          # UI-friendly TypeScript types
+└── database.ts                       # Supabase database types
 ```
+
+## Database Schema
+
+Two tables with a foreign key relationship:
+
+```
+companies
+├── id (uuid, primary key)
+├── name, logo_url, website, created_at
+
+jobs
+├── id (uuid, primary key)
+├── company_id (uuid, FK → companies.id)
+├── slug, title, city, state
+├── salary_min, salary_max, job_type
+├── description, requirements[], apply_url
+├── territory, travel_percentage, industry_vertical
+├── is_active, posted_at, created_at
+```
+
+## Environment Variables
+
+Required in `.env.local`:
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+## Data Fetching
+
+Key functions in `lib/jobs.ts`:
+- `getJobs(filters?)` - Fetch all active jobs with optional filters
+- `getJobBySlug(slug)` - Fetch single job by slug
+- `getJobsByLocation(state, city)` - Fetch jobs for location pages
+- `getAllJobSlugs()` - For static generation (uses static client)
 
 ## Design System
 
 ### Colors
-- **Blue palette** (blue-50 to blue-950): Primary brand color for industrial reliability
+- **Blue palette** (blue-50 to blue-950): Primary brand color
 - **Steel grays** (steel-50 to steel-950): Neutral colors for text and UI
 - **Semantic colors**: success, warning, error, info variants
 
@@ -65,32 +111,10 @@ types/
 ### Spacing
 - 4px-based scale with 12 increments (spacing-1 through spacing-12)
 
-## Key Types
-
-```typescript
-interface Job {
-  id: string;
-  slug: string;
-  title: string;
-  company: string;
-  companyLogo: string;
-  location: { city: string; state: string };
-  salaryMin: number;
-  salaryMax: number;
-  jobType: 'full-time' | 'contract' | 'part-time';
-  description: string;
-  requirements: string[];
-  postedDate: string;
-  applyUrl: string;
-  territory?: string;
-  travelPercentage?: number;
-  industryVertical?: string;
-}
-```
-
 ## Development Notes
 
-- Currently using mock data in `lib/mock-data.ts`
-- Location pages (`/jobs/in/[state]/[city]`) are static SEO landing pages
+- Location pages use static SEO content from `lib/locations.ts`
 - Job detail pages link to external company application URLs
 - All components use the custom Tailwind color tokens (blue-*, steel-*)
+- Build-time static generation uses `createStaticClient()` (no cookies)
+- Runtime data fetching uses `createClient()` from server.ts (with cookies)

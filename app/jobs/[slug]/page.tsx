@@ -2,21 +2,20 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { getJobBySlug, mockJobs } from '@/lib/mock-data';
+import { getJobBySlug, getAllJobSlugs } from '@/lib/jobs';
 
 interface JobPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return mockJobs.map((job) => ({
-    slug: job.slug,
-  }));
+  const slugs = await getAllJobSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: JobPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const job = getJobBySlug(slug);
+  const job = await getJobBySlug(slug);
 
   if (!job) {
     return {
@@ -32,7 +31,7 @@ export async function generateMetadata({ params }: JobPageProps): Promise<Metada
 
 export default async function JobPage({ params }: JobPageProps) {
   const { slug } = await params;
-  const job = getJobBySlug(slug);
+  const job = await getJobBySlug(slug);
 
   if (!job) {
     notFound();
@@ -192,7 +191,7 @@ export default async function JobPage({ params }: JobPageProps) {
                         <p className="text-steel-800 font-medium">{job.territory}</p>
                       </div>
                     )}
-                    {job.travelPercentage !== undefined && (
+                    {job.travelPercentage != null && (
                       <div className="bg-steel-50 rounded-lg p-4">
                         <p className="text-sm text-steel-500 mb-1">Travel Required</p>
                         <p className="text-steel-800 font-medium">
