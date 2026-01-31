@@ -24,6 +24,9 @@ function transformJob(row: JobWithCompany): Job {
     territory: row.territory,
     travelPercentage: row.travel_percentage,
     industryVertical: row.industry_vertical,
+    isFeatured: row.is_featured,
+    isNewsletterFeatured: row.is_newsletter_featured,
+    featuredUntil: row.featured_until,
   };
 }
 
@@ -176,4 +179,28 @@ export async function getAllJobSlugs(): Promise<string[]> {
   }
 
   return (data as { slug: string }[]).map((row) => row.slug);
+}
+
+/**
+ * Fetch featured jobs for homepage display
+ * Returns jobs that are featured and have a valid featured_until date
+ */
+export async function getFeaturedJobs(): Promise<Job[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('jobs')
+    .select('*, companies(*)')
+    .eq('is_active', true)
+    .eq('is_featured', true)
+    .gt('featured_until', new Date().toISOString())
+    .order('posted_at', { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error('Error fetching featured jobs:', error);
+    return [];
+  }
+
+  return (data as JobWithCompany[]).map(transformJob);
 }

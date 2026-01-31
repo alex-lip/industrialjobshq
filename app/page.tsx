@@ -2,11 +2,18 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import SearchBar from '@/components/SearchBar';
 import JobCard from '@/components/JobCard';
-import { getJobs } from '@/lib/jobs';
+import { getJobs, getFeaturedJobs } from '@/lib/jobs';
 
 export default async function HomePage() {
-  const allJobs = await getJobs();
-  const featuredJobs = allJobs.slice(0, 3);
+  const [allJobs, featuredJobsList] = await Promise.all([
+    getJobs(),
+    getFeaturedJobs(),
+  ]);
+
+  // Use featured jobs if available, otherwise show recent jobs
+  const featuredJobs = featuredJobsList.length > 0
+    ? featuredJobsList
+    : allJobs.slice(0, 3);
 
   return (
     <div>

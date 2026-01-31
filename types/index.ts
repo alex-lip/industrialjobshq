@@ -23,6 +23,9 @@ export interface Job {
   territory: string | null;
   travelPercentage: number | null;
   industryVertical: string | null;
+  isFeatured?: boolean;
+  isNewsletterFeatured?: boolean;
+  featuredUntil?: string | null;
 }
 
 export interface LocationPage {

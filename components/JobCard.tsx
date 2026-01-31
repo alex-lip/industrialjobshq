@@ -4,9 +4,10 @@ import type { Job } from '@/types';
 
 interface JobCardProps {
   job: Job;
+  showFeaturedBadge?: boolean;
 }
 
-export default function JobCard({ job }: JobCardProps) {
+export default function JobCard({ job, showFeaturedBadge = true }: JobCardProps) {
   const formatSalary = (min: number, max: number) => {
     const formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -122,6 +123,12 @@ export default function JobCard({ job }: JobCardProps) {
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
               {job.jobType.replace('-', ' ')}
             </span>
+
+            {showFeaturedBadge && job.isFeatured && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-light text-warning-dark">
+                Featured
+              </span>
+            )}
 
             {job.travelPercentage && job.travelPercentage > 0 && (
               <span className="text-steel-500">{job.travelPercentage}% travel</span>
