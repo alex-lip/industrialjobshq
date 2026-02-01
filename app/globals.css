@@ -97,7 +97,13 @@ body {
 }
 
 /* Link defaults */
-a {
+/* a {
+  color: var(--color-blue-600);
+  text-decoration: none;
+} */
+
+/* Only apply to links without explicit color classes */
+a:not([class*="text-"]) {
   color: var(--color-blue-600);
   text-decoration: none;
 }
